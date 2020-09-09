@@ -87,7 +87,7 @@ function MediaCard(props: IMediaCardProps) {
     };
     //function to delete any recipe from the data based
     function deleteRecipe(){
-        fetch(`http://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
+        fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
             method:"DELETE"
         }).then(response => {
             if(!response.ok){
@@ -121,7 +121,7 @@ function MediaCard(props: IMediaCardProps) {
             recipeImageUrl:imageURL
         });
         
-        fetch(`http://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
+        fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
             body: JSON.stringify(JSONarray),
             headers: {
                 "Content-Type":"application/json",

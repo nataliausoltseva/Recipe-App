@@ -65,7 +65,7 @@ function MainPage() {
     const [recipe, setRecipe] = useState<Recipes[]>([{recipeDescription:"",recipeDifficulty:"",recipeId:0,recipeImageUrl:"",recipeIngredients:"",recipeName:""}])
 
     useEffect(() => {
-        fetch(`http://recipe-api-nu.azurewebsites.net/api/Recipes`)
+        fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes`)
         .then(response => response.json())
         .then(response => {
             console.log(response);
@@ -156,7 +156,7 @@ function uploadRecipe(){
         recipeImageUrl:imageURL
     });
         
-    fetch(`http://recipe-api-nu.azurewebsites.net/api/Recipes/`,{
+    fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/`,{
         body: JSON.stringify(JSONarray),
         headers: {
             "Content-Type":"application/json",
