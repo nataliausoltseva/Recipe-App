@@ -36,20 +36,24 @@ const useStyles = makeStyles((theme: Theme) =>
       transition: theme.transitions.create('transform', {
         duration: theme.transitions.duration.shortest,
       }),
+      
     },
     expandOpen: {
       transform: 'rotate(180deg)',
+
     },
     avatar: {
       backgroundColor: red[500],
     },
     paper: {
-        position: 'absolute',
+        marginTop:"45vh",
+        marginLeft:"50vw",
         width: 400,
         backgroundColor: theme.palette.background.paper,
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
+        textAlign:"center"
       },
   }),
 );
@@ -66,13 +70,13 @@ function rand() {
       top: `${top}%`,
       left: `${left}%`,
       transform: `translate(-${top}%, -${left}%)`,
+      width:"50%",
     };
   }
 
 function MediaCard(props: IMediaCardProps) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
-    
     
     const handleExpandClick = () => {
       setExpanded(!expanded);
@@ -98,7 +102,7 @@ function MediaCard(props: IMediaCardProps) {
             }
         })
     }
-
+    let loadImage;
     function uploadRecipe(){
         const recipeInput = document.getElementById("recipe-name-input") as HTMLInputElement;
         const difficultyInput = document.getElementById("recipe-difficulty-input") as HTMLInputElement;
@@ -110,7 +114,16 @@ function MediaCard(props: IMediaCardProps) {
         const difficulty = difficultyInput.value;
         const ingredients = ingredientsInput.value;
         const description = descriptionInput.value;
-        const imageURL = imageURLInput.value;
+        let imageURL = imageURLInput.value;
+
+        var http = new XMLHttpRequest();
+        http.open("HEAD",imageURL,false);
+        http.send();
+    
+        loadImage = http.status;
+        if(loadImage === 404){
+            imageURL = "";
+        } 
 
         const JSONarray=({
             recipeName: name,
@@ -136,21 +149,36 @@ function MediaCard(props: IMediaCardProps) {
                 window.location.reload();
             }
         })
-        console.log(JSONarray);
-        console.log("Where POST APi is going to be called to save recipe");
     }
     
     const [modalStyle] = React.useState(getModalStyle)
     const body = (
         <div style={modalStyle} className={classes.paper}>
             <form className={classes.root} noValidate autoComplete="off">
-                <TextField required id="recipe-name-input" label="Recipe Name" defaultValue={props.RecipeName} style={{width:"100%"}}/>
-                <TextField required id="recipe-difficulty-input" label="Recipe Difficulty" defaultValue={props.RecipeDifficulty} style={{width:"100%"}}/>
-                <TextField required id="recipe-image-url-input" label="Recipe Image URL" defaultValue={props.RecipeURL} style={{width:"100%"}}/>
-                <TextField required id="recipe-ingredients-input" label="Recipe Ingredients" defaultValue={props.RecipeIngredients} style={{width:"100%"}}/>
-                <TextField required id="recipe-description-input" label="Recipe Description" defaultValue={props.RecipeDescription} style={{width:"100%"}}/>
+                <TextField id="recipe-name-input" label="Recipe Name" defaultValue={props.RecipeName} style={{width:"100%"}}/>
+                <TextField id="recipe-difficulty-input" label="Recipe Difficulty" defaultValue={props.RecipeDifficulty} style={{width:"100%"}}/>
+                <TextField id="recipe-image-url-input" label="Recipe Image URL" defaultValue={props.RecipeURL} style={{width:"100%"}}/>
+                <TextField
+                    id="recipe-ingredients-input"
+                    label="Recipe Ingredients"
+                    multiline
+                    variant="outlined"
+                    rowsMax={3}
+                    style={{marginTop:"1em",width:"100%"}}
+                    defaultValue={props.RecipeIngredients}
+                />
+                <br/>
+                <TextField
+                    id="recipe-description-input"
+                    label="Recipe Description"
+                    multiline
+                    rowsMax={3}
+                    variant="outlined"
+                    style={{marginTop:"1em",width:"100%"}}
+                    defaultValue={props.RecipeDescription}
+                />
 
-                <Button variant="contained" onClick={uploadRecipe} id="saveButton">Save</Button>
+                <Button variant="contained" onClick={uploadRecipe} id="saveButton" >Save</Button>
             </form>
         </div>
       );
@@ -178,25 +206,25 @@ function MediaCard(props: IMediaCardProps) {
     else {
         mediaBody = (
             <div>
-                    <CardContent>
-                        <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontFamily: "fantasy"}}>
-                            {props.RecipeName}
-                        </Typography>
-                    </CardContent>
-                    <CardMedia
-                        className={classes.media}
-                        image={props.RecipeURL}
-                        title={props.RecipeName}
-                    />
-                    <CardContent>
-                        <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontFamily: "fantasy"}}>
-                            {props.RecipeDifficulty}
-                        </Typography>
-                        <br/>
-                        <Button variant="contained" onClick={deleteRecipe} id="deleteButton"> ❌ Delete</Button>
-                        <Button variant="contained" onClick={openModal} id="editButton">📝 Edit</Button>
+                <CardContent>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontFamily: "fantasy"}}>
+                        {props.RecipeName}
+                    </Typography>
+                </CardContent>
+                <CardMedia
+                    className={classes.media}
+                    image={props.RecipeURL}
+                    title={props.RecipeName}
+                />
+                <CardContent>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontFamily: "fantasy"}}>
+                        {props.RecipeDifficulty}
+                    </Typography>
+                    <br/>
+                    <Button variant="contained" onClick={deleteRecipe} id="deleteButton"> ❌ Delete</Button>
+                    <Button variant="contained" onClick={openModal} id="editButton">📝 Edit</Button>
 
-                    </CardContent>
+                </CardContent>
             </div>
         );
 
@@ -204,34 +232,31 @@ function MediaCard(props: IMediaCardProps) {
 
     return (
         <div>
-            
             <Card className="MediaCardContainer">
-                    {mediaBody}
-                    <CardActions disableSpacing>
+                {mediaBody}
+                <CardActions disableSpacing>
                     <IconButton
                         className={clsx(classes.expand, {
                             [classes.expandOpen]: expanded,
                         })}
                         onClick={handleExpandClick}
                         aria-expanded={expanded}
-                        aria-label="show more"
                         >
                         <ExpandMoreIcon />
                     </IconButton>
-                    </CardActions>
-                    <Collapse in={expanded} timeout="auto" unmountOnExit>
-                        <CardContent>
-                            
-                            <Typography paragraph style={{fontFamily: "fantasy", textDecoration:"underline"}}>Ingredients:</Typography>
-                            <Typography paragraph>
-                                {props.RecipeIngredients}
-                            </Typography>
-                            <Typography paragraph style={{fontFamily: "fantasy", textDecoration:"underline"}}>Method:</Typography>
-                            <Typography paragraph>
+                </CardActions>
+                <Collapse in={expanded} timeout="auto" unmountOnExit >
+                    <CardContent>
+                        <Typography paragraph style={{fontFamily: "fantasy", textDecoration:"underline"}}>Ingredients:</Typography>
+                        <Typography paragraph>
+                            {props.RecipeIngredients}
+                        </Typography>
+                        <Typography paragraph style={{fontFamily: "fantasy", textDecoration:"underline"}}>Method:</Typography>
+                        <Typography paragraph>
                             {props.RecipeDescription}
-                            </Typography>
-                        </CardContent>
-                    </Collapse>
+                        </Typography>
+                    </CardContent>
+                </Collapse>
             </Card>
             <Modal
                 open={open}
@@ -239,13 +264,10 @@ function MediaCard(props: IMediaCardProps) {
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
             >
-                    {body}
+                {body}
             </Modal>
 
         </div>
     )
 }
-
-
-
 export default MediaCard

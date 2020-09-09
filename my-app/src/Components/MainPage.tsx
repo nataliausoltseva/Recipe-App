@@ -16,7 +16,6 @@ interface Recipes {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      maxWidth: 345,
     },
     media: {
       height: 0,
@@ -36,13 +35,16 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: red[500],
     },
     paper: {
-        position: 'absolute',
+        marginTop:"45vh",
+        marginLeft:"50vw",
         width: 400,
         backgroundColor: theme.palette.background.paper,
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
+        textAlign:"center"
       },
+      
   }),
 );
 
@@ -57,9 +59,9 @@ function rand() {
       top: `${top}%`,
       left: `${left}%`,
       transform: `translate(-${top}%, -${left}%)`,
+      width:"50%",
     };
 }
-
   
 function MainPage() {
     const [recipe, setRecipe] = useState<Recipes[]>([{recipeDescription:"",recipeDifficulty:"",recipeId:0,recipeImageUrl:"",recipeIngredients:"",recipeName:""}])
@@ -68,12 +70,10 @@ function MainPage() {
         fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes`)
         .then(response => response.json())
         .then(response => {
-            console.log(response);
             setRecipe(response);
         });
         // eslint-disable-next-line
     }, [])
-    console.log(recipe);
     var Cards: JSX.Element[] = [];
     recipe.forEach((el: Recipes, i: Number) => {
         if(!el || !el.recipeDescription ){
@@ -95,16 +95,31 @@ function MainPage() {
     const closeModal = () => {
         setOpen(false);
     };
-
+    
     const [modalStyle] = React.useState(getModalStyle)
     const body = (
-        <div style={modalStyle} className={classes.paper}>
+        <div style={modalStyle} className={classes.paper} >
             <form className={classes.root} noValidate autoComplete="off">
-                <TextField required id="recipe-name-input" label="Recipe Name" defaultValue="" style={{width:"100%"}}/>
-                <TextField required id="recipe-difficulty-input" label="Recipe Difficulty" defaultValue="" style={{width:"100%"}}/>
-                <TextField required id="recipe-image-url-input" label="Recipe Image URL" defaultValue="" style={{width:"100%"}}/>
-                <TextField required id="recipe-ingredients-input" label="Recipe Ingredients" defaultValue="" style={{width:"100%"}}/>
-                <TextField required id="recipe-description-input" label="Recipe Description" defaultValue="" style={{width:"100%"}}/>
+                <TextField id="recipe-name-input" label="Recipe Name" defaultValue="" style={{width:"100%"}}/>
+                <TextField id="recipe-difficulty-input" label="Recipe Difficulty" defaultValue="" style={{width:"100%"}}/>
+                <TextField id="recipe-image-url-input" label="Recipe Image URL" defaultValue="" style={{width:"100%"}}/>
+                <TextField
+                    id="recipe-ingredients-input"
+                    label="Recipe Ingredients"
+                    multiline
+                    variant="outlined"
+                    rowsMax={3}
+                    style={{marginTop:"1em",width:"100%"}}
+                />
+                <br/>
+                <TextField
+                    id="recipe-description-input"
+                    label="Recipe Description"
+                    multiline
+                    rowsMax={3}
+                    variant="outlined"
+                    style={{marginTop:"1em",width:"100%"}}
+                />
 
                 <Button variant="contained" onClick={uploadRecipe} id="saveButton" style={{textAlign:"center"}}>Save</Button>
             </form>
@@ -113,26 +128,21 @@ function MainPage() {
 
     return(
         <div>
-            <Grid container spacing={3} className="MediaGridContainer" style={{marginTop:"1em"}}>
+            <Grid container spacing={1} className="MediaGridContainer" style={{marginTop:"1em"}}>
                 {Cards}
             </Grid>
-            
             <Button variant="contained" onClick={openModal} id="addButton"> &#10133; Add</Button>
-
             <Modal
                 open={open}
                 onClose={closeModal}
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
+                style={{textAlign:"center"}}
                 >
                     {body}
             </Modal>
-
-
         </div>
     );
 }
-
+let loadImage;
 function uploadRecipe(){
 
     const recipeInput = document.getElementById("recipe-name-input") as HTMLInputElement;
@@ -145,7 +155,18 @@ function uploadRecipe(){
     const difficulty = difficultyInput.value;
     const ingredients = ingredientsInput.value;
     const description = descriptionInput.value;
-    const imageURL = imageURLInput.value;
+    let imageURL = imageURLInput.value;
+
+    
+    var http = new XMLHttpRequest();
+    http.open("HEAD",imageURL,false);
+    http.send();
+
+    loadImage = http.status;
+
+    if(loadImage === 404){
+        imageURL = "";
+    } 
 
     const JSONarray=({
         recipeName: name,
@@ -170,8 +191,6 @@ function uploadRecipe(){
         else{
             window.location.reload();
             }
-    })
-    console.log(JSONarray);
-    console.log("Where POST APi is going to be called to save recipe");
+    });
 }
 export default MainPage
