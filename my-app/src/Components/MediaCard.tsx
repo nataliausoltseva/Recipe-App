@@ -102,7 +102,6 @@ function MediaCard(props: IMediaCardProps) {
             }
         })
     }
-    let loadImage;
     function uploadRecipe(){
         const recipeInput = document.getElementById("recipe-name-input") as HTMLInputElement;
         const difficultyInput = document.getElementById("recipe-difficulty-input") as HTMLInputElement;
@@ -116,14 +115,14 @@ function MediaCard(props: IMediaCardProps) {
         const description = descriptionInput.value;
         let imageURL = imageURLInput.value;
 
-        var http = new XMLHttpRequest();
-        http.open("HEAD",imageURL,false);
-        http.send();
-    
-        loadImage = http.status;
-        if(loadImage === 404){
-            imageURL = "";
-        } 
+
+        fetch(imageURL,{
+            method:"HEAD"
+        }).then(response =>{
+            if(response.status < 200 || response.status > 299){
+                imageURL = "";
+            } 
+        });
 
         const JSONarray=({
             recipeName: name,
@@ -197,8 +196,8 @@ function MediaCard(props: IMediaCardProps) {
                         {props.RecipeDifficulty}
                     </Typography>
                     <br/>
-                        <Button variant="contained" onClick={deleteRecipe} id="deleteButton"> ❌ Delete</Button>
-                        <Button variant="contained" onClick={openModal} id="editButton">📝 Edit</Button>
+                        <Button variant="contained" onClick={deleteRecipe} id="deleteButton"> <span role="img" aria-label="delete">❌</span> Delete</Button>
+                        <Button variant="contained" onClick={openModal} id="editButton"><span role="img" aria-label="edit">📝</span> Edit</Button>
                 </CardContent>
             </div>
         );
@@ -221,9 +220,8 @@ function MediaCard(props: IMediaCardProps) {
                         {props.RecipeDifficulty}
                     </Typography>
                     <br/>
-                    <Button variant="contained" onClick={deleteRecipe} id="deleteButton"> ❌ Delete</Button>
-                    <Button variant="contained" onClick={openModal} id="editButton">📝 Edit</Button>
-
+                    <Button variant="contained" onClick={deleteRecipe} id="deleteButton"> <span role="img" aria-label="delete">❌</span> Delete</Button>
+                    <Button variant="contained" onClick={openModal} id="editButton"><span role="img" aria-label="edit">📝</span> Edit</Button>
                 </CardContent>
             </div>
         );

@@ -131,7 +131,7 @@ function MainPage() {
             <Grid container spacing={1} className="MediaGridContainer" style={{marginTop:"1em"}}>
                 {Cards}
             </Grid>
-            <Button variant="contained" onClick={openModal} id="addButton"> &#10133; Add</Button>
+            <Button variant="contained" onClick={openModal} id="addButton"> <span role="img" aria-label="add">&#10133;</span>  Add</Button>
             <Modal
                 open={open}
                 onClose={closeModal}
@@ -142,7 +142,6 @@ function MainPage() {
         </div>
     );
 }
-let loadImage;
 function uploadRecipe(){
 
     const recipeInput = document.getElementById("recipe-name-input") as HTMLInputElement;
@@ -157,16 +156,13 @@ function uploadRecipe(){
     const description = descriptionInput.value;
     let imageURL = imageURLInput.value;
 
-    
-    var http = new XMLHttpRequest();
-    http.open("HEAD",imageURL,false);
-    http.send();
-
-    loadImage = http.status;
-
-    if(loadImage === 404){
-        imageURL = "";
-    } 
+    fetch(imageURL,{
+        method:"HEAD"
+    }).then(response =>{
+        if(response.status < 200 || response.status > 299){
+            imageURL = "";
+        } 
+    });
 
     const JSONarray=({
         recipeName: name,
