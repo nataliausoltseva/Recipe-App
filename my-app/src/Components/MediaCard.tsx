@@ -24,7 +24,6 @@ interface IMediaCardProps {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      maxWidth: 345,
     },
     media: {
       height: 0,
@@ -89,7 +88,7 @@ function MediaCard(props: IMediaCardProps) {
     const closeModal = () => {
         setOpen(false);
     };
-    //function to delete any recipe from the data based
+    
     function deleteRecipe(){
         fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
             method:"DELETE"
@@ -187,12 +186,12 @@ function MediaCard(props: IMediaCardProps) {
         mediaBody = (
             <div>
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontFamily: "fantasy"}}>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold", fontFamily:"fantasy"}}>
                         {props.RecipeName}
                     </Typography>
                 </CardContent>
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontFamily: "fantasy"}}>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold"}}>
                         {props.RecipeDifficulty}
                     </Typography>
                     <br/>
@@ -206,7 +205,7 @@ function MediaCard(props: IMediaCardProps) {
         mediaBody = (
             <div>
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontFamily: "fantasy"}}>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold", fontFamily:"fantasy"}}>
                         {props.RecipeName}
                     </Typography>
                 </CardContent>
@@ -216,7 +215,7 @@ function MediaCard(props: IMediaCardProps) {
                     title={props.RecipeName}
                 />
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontFamily: "fantasy"}}>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold"}}>
                         {props.RecipeDifficulty}
                     </Typography>
                     <br/>
@@ -245,11 +244,11 @@ function MediaCard(props: IMediaCardProps) {
                 </CardActions>
                 <Collapse in={expanded} timeout="auto" unmountOnExit >
                     <CardContent>
-                        <Typography paragraph style={{fontFamily: "fantasy", textDecoration:"underline"}}>Ingredients:</Typography>
+                        <Typography paragraph style={{fontWeight:"bold", textDecoration:"underline"}}>Ingredients:</Typography>
                         <Typography paragraph>
                             {props.RecipeIngredients}
                         </Typography>
-                        <Typography paragraph style={{fontFamily: "fantasy", textDecoration:"underline"}}>Method:</Typography>
+                        <Typography paragraph style={{fontWeight:"bold", textDecoration:"underline"}}>Method:</Typography>
                         <Typography paragraph>
                             {props.RecipeDescription}
                         </Typography>
@@ -259,8 +258,7 @@ function MediaCard(props: IMediaCardProps) {
             <Modal
                 open={open}
                 onClose={closeModal}
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
+                style={{textAlign:"center"}}
             >
                 {body}
             </Modal>
