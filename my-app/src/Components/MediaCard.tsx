@@ -11,6 +11,9 @@ import { Theme, createStyles, CardMedia, Button, TextField } from '@material-ui/
 import { red } from '@material-ui/core/colors';
 import clsx from 'clsx';
 import Modal from "@material-ui/core/Modal";
+import {EmailShareButton, FacebookShareButton, LineShareButton, LinkedinShareButton, RedditShareButton, TwitterShareButton, ViberShareButton, VKShareButton, WhatsappShareButton} from "react-share";
+import {EmailIcon,FacebookIcon,LineIcon,LinkedinIcon, RedditIcon,TwitterIcon, ViberIcon, VKIcon, WhatsappIcon} from "react-share";
+import CopyToClipboard from 'react-copy-to-clipboard';;
 
 interface IMediaCardProps {
     RecipeId: 0;
@@ -88,6 +91,15 @@ function MediaCard(props: IMediaCardProps) {
     const closeModal = () => {
         setOpen(false);
     };
+
+    const [share, setShare] = React.useState(false);
+
+    const openShare =()=>{
+        setShare(true);
+    }
+    const closeShare =()=>{
+        setShare(false);
+    }
     
     function deleteRecipe(){
         fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
@@ -180,6 +192,49 @@ function MediaCard(props: IMediaCardProps) {
             </form>
         </div>
       );
+    let sharingUrl = `https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`;
+    const shareBody = (
+        <div style={modalStyle} className={classes.paper}>
+            <FacebookShareButton url={sharingUrl}>
+                <FacebookIcon size={32} round={true} />
+            </FacebookShareButton>  
+
+            <TwitterShareButton url={sharingUrl}>
+                <TwitterIcon size={32} round={true} />
+            </TwitterShareButton> 
+
+            <LinkedinShareButton url={sharingUrl} >
+                <LinkedinIcon size={32} round={true} />
+            </LinkedinShareButton> 
+
+            <ViberShareButton url={sharingUrl}>
+                <ViberIcon size={32} round={true} />
+            </ViberShareButton> 
+
+            <VKShareButton url={sharingUrl}>
+                <VKIcon size={32} round={true} />
+            </VKShareButton> 
+
+            <WhatsappShareButton url={sharingUrl}>
+                <WhatsappIcon size={32} round={true} />
+            </WhatsappShareButton> 
+
+            <EmailShareButton url={sharingUrl}>
+                <EmailIcon size={32} round={true} />
+            </EmailShareButton>
+
+            <RedditShareButton url={sharingUrl}>
+                <RedditIcon size={32} round={true} />
+            </RedditShareButton>
+
+            <LineShareButton url={sharingUrl}>
+                <LineIcon size={32} round={true} />
+            </LineShareButton>
+            <CopyToClipboard text={sharingUrl}>
+                <button>Copy URL to the clipboard</button>
+            </CopyToClipboard>
+        </div>
+      )
     
     let mediaBody;
     if(!props.RecipeURL){
@@ -197,6 +252,8 @@ function MediaCard(props: IMediaCardProps) {
                     <br/>
                         <Button variant="contained" onClick={deleteRecipe} id="deleteButton"> <span role="img" aria-label="delete">❌</span> Delete</Button>
                         <Button variant="contained" onClick={openModal} id="editButton"><span role="img" aria-label="edit">📝</span> Edit</Button>
+                        <Button variant="contained" onClick={openShare} id="editButton"><span role="img" aria-label="share">📢</span> Share</Button>
+                        
                 </CardContent>
             </div>
         );
@@ -221,6 +278,7 @@ function MediaCard(props: IMediaCardProps) {
                     <br/>
                     <Button variant="contained" onClick={deleteRecipe} id="deleteButton"> <span role="img" aria-label="delete">❌</span> Delete</Button>
                     <Button variant="contained" onClick={openModal} id="editButton"><span role="img" aria-label="edit">📝</span> Edit</Button>
+                    <Button variant="contained" onClick={openShare} id="editButton"><span role="img" aria-label="share">📢</span> Share</Button>
                 </CardContent>
             </div>
         );
@@ -261,6 +319,14 @@ function MediaCard(props: IMediaCardProps) {
                 style={{textAlign:"center"}}
             >
                 {body}
+            </Modal>
+
+            <Modal
+                open={share}
+                onClose={closeShare}
+                style={{textAlign:"center"}}
+            >
+                {shareBody}
             </Modal>
 
         </div>

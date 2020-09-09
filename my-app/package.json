@@ -13,9 +13,11 @@
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
     "react": "^16.13.1",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.13.1",
     "react-responsive-modal": "^5.1.0",
     "react-scripts": "3.4.3",
+    "react-share": "^4.2.1",
     "typescript": "^3.7.5"
   },
   "scripts": {
@@ -38,5 +40,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-copy-to-clipboard": "^4.3.0"
   }
 }
