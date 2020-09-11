@@ -230,6 +230,7 @@ function MediaCard(props: IMediaCardProps) {
             <LineShareButton url={sharingUrl}>
                 <LineIcon size={32} round={true} />
             </LineShareButton>
+            <br/>
             <CopyToClipboard text={sharingUrl}>
                 <button>Copy URL to the clipboard</button>
             </CopyToClipboard>
