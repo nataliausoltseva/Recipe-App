@@ -72,8 +72,9 @@ function MainPage() {
         .then(response => {
             setRecipe(response);
         });
-        // eslint-disable-next-line
+         // eslint-disable-next-line
     }, [])
+    
     var Cards: JSX.Element[] = [];
     recipe.forEach((el: Recipes, i: Number) => {
         if(!el || !el.recipeDescription ){

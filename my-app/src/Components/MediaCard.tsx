@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -7,13 +7,13 @@ import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { Theme, createStyles, CardMedia, Button, TextField } from '@material-ui/core';
+import { Theme, createStyles, CardMedia, Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 import clsx from 'clsx';
 import Modal from "@material-ui/core/Modal";
 import {EmailShareButton, FacebookShareButton, LineShareButton, LinkedinShareButton, RedditShareButton, TwitterShareButton, ViberShareButton, VKShareButton, WhatsappShareButton} from "react-share";
 import {EmailIcon,FacebookIcon,LineIcon,LinkedinIcon, RedditIcon,TwitterIcon, ViberIcon, VKIcon, WhatsappIcon} from "react-share";
-import CopyToClipboard from 'react-copy-to-clipboard';;
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 interface IMediaCardProps {
     RecipeId: 0;
@@ -22,6 +22,13 @@ interface IMediaCardProps {
     RecipeIngredients: string;
     RecipeDescription: string;
     RecipeURL: string;
+}
+
+interface Languages {
+    language:string;
+}
+interface ReturningTranslation {
+    text:[];
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,6 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: red[500],
     },
     paper: {
+        top:0,
         marginTop:"45vh",
         marginLeft:"50vw",
         width: 400,
@@ -56,6 +64,26 @@ const useStyles = makeStyles((theme: Theme) =>
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
         textAlign:"center"
+      },
+
+      languages: {
+        
+        backgroundColor: theme.palette.background.paper,
+        border: '2px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+        textAlign:"center"
+      },
+
+      dropdown: {
+        position: 'absolute',
+        top: 28,
+        right: 0,
+        left: 0,
+        zIndex: 1,
+        border: '1px solid',
+        padding: theme.spacing(1),
+        backgroundColor: theme.palette.background.paper,
       },
   }),
 );
@@ -100,7 +128,45 @@ function MediaCard(props: IMediaCardProps) {
     const closeShare =()=>{
         setShare(false);
     }
+
+    const [languagesArray, setLanguagesArray] = useState<Languages[]>([{language:""}]);
+    const [fromLanguage, setFromLanguage] = useState("en");
+    const [toLanguage, setToLanguage] = useState("en");
+
+    const handleChangeFrom = (event:React.ChangeEvent<HTMLInputElement>) => {
+        setFromLanguage((event.target as HTMLInputElement).value);
+    };
+
+    const handleChangeTo = (event:React.ChangeEvent<HTMLInputElement>) => {
+        setToLanguage((event.target as HTMLInputElement).value);
+    };
+
+    const [languagesModal,setLanguagesModal] = React.useState(false);
+    const openLanguages =()=>{
+        setLanguagesModal(true);
+        callLanguages();
+    }
+    const closeLanguages =()=>{
+        setLanguagesModal(false);
+    }
     
+    function callLanguages() {
+
+        fetch("https://google-translate1.p.rapidapi.com/language/translate/v2/languages", {
+            "method": "GET",
+            "headers": {
+                "x-rapidapi-host": "google-translate1.p.rapidapi.com",
+                "x-rapidapi-key": "CnBDKEvkqgmshLU3r6O5spCbAWnRp1kvHmcjsnl0ZEcPZJtpE2",
+                "accept-encoding": "application/gzip"
+            }
+        })
+        .then(response => response.json())
+        .then(response => {
+            setLanguagesArray(response.data.languages);
+        });
+
+    }
+
     function deleteRecipe(){
         fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
             method:"DELETE"
@@ -160,7 +226,55 @@ function MediaCard(props: IMediaCardProps) {
             }
         })
     }
+    const api_key=process.env.REACT_APP_API_KEY;
+    function translateCard() {
+        let passingArray = `${props.RecipeName} 'HII' ${props.RecipeDifficulty} 'HII' ${props.RecipeIngredients} 'HII' ${props.RecipeDescription}`;
+        
+        fetch(`https://just-translated.p.rapidapi.com/?text=${passingArray}&lang_from=${fromLanguage}&lang_to=${toLanguage}`, {
+            "method": "GET",
+            "headers": {
+                "x-rapidapi-host": "just-translated.p.rapidapi.com",
+                "x-rapidapi-key": `${api_key}`,
+                "Content-Type":"application/json",
+                }
+            })
+            .then(response => response.json())
+            .then(response => {
+                updateCard(response.text[0]);
+            })
+        closeLanguages();
+    }
     
+    function updateCard(string:string) {
+        console.log(string);
+        var splitted = string.split("HII",4);
+        console.log(splitted);
+        const JSONarray=({
+            recipeName: splitted[0],
+            recipeId: props.RecipeId,
+            recipeDifficulty: splitted[1],
+            recipeIngredients: splitted[2],
+            recipeDescription: splitted[3],
+            recipeImageUrl:props.RecipeURL
+        });
+
+        console.log(JSONarray);
+        fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
+            body: JSON.stringify(JSONarray),
+            headers: {
+                "Content-Type":"application/json",
+                "cache-control":"no-cache"
+            },
+            method: "PUT"
+        }).then(response =>{
+            if(!response.ok){
+                alert(response.statusText);
+            }
+            else{
+                window.location.reload();
+            }
+        })
+    }
     const [modalStyle] = React.useState(getModalStyle)
     const body = (
         <div style={modalStyle} className={classes.paper}>
@@ -192,6 +306,7 @@ function MediaCard(props: IMediaCardProps) {
             </form>
         </div>
       );
+
     let sharingUrl = `https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`;
     const shareBody = (
         <div style={modalStyle} className={classes.paper}>
@@ -236,23 +351,47 @@ function MediaCard(props: IMediaCardProps) {
             </CopyToClipboard>
         </div>
       )
-    
+    const languages =(
+        <div className={classes.languages}>     
+            
+            <FormControl component="fieldset">
+                <FormLabel component="legend">From Language</FormLabel>
+                <RadioGroup aria-label="gender" name="gender1" value={fromLanguage} onChange={handleChangeFrom}>
+                    {languagesArray.map((item,i)=>
+                    <FormControlLabel value={item.language} control={<Radio />} label={item.language} key={i}/>)}  
+                </RadioGroup>
+            </FormControl>    
+            <FormControl component="fieldset">
+                <FormLabel component="legend">To Language</FormLabel>
+                <RadioGroup aria-label="gender" name="gender1" value={toLanguage} onChange={handleChangeTo}>
+                    {languagesArray.map((item,i)=>
+                    <FormControlLabel value={item.language} control={<Radio />} label={item.language} key={i}/>)}  
+                </RadioGroup>
+            </FormControl>    
+            <Button variant="contained" onClick={translateCard} id="saveButton" style={{bottom:0, position:"fixed"}} >Save</Button>             
+        </div>
+    ) ;
     let mediaBody;
+    let nameTag =`RecipeName${props.RecipeId}`;
+    let difficultyTag = `RecipeDifficulty${props.RecipeId}`;
+    let descriptionTag = `RecipeDescription${props.RecipeId}`;
+    let ingredientsTag = `RecipeIngredients${props.RecipeId}`;
     if(!props.RecipeURL){
         mediaBody = (
             <div>
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold", fontFamily:"fantasy"}}>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" id={nameTag} style={{fontWeight:"bold", fontFamily:"fantasy"}}>
                         {props.RecipeName}
                     </Typography>
                 </CardContent>
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold"}}>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" id={difficultyTag} style={{fontWeight:"bold"}}>
                         {props.RecipeDifficulty}
                     </Typography>
                     <br/>
                         <Button variant="contained" onClick={deleteRecipe} id="deleteButton"> <span role="img" aria-label="delete">❌</span> Delete</Button>
                         <Button variant="contained" onClick={openModal} id="editButton"><span role="img" aria-label="edit">📝</span> Edit</Button>
+                        <Button variant="contained" onClick={openLanguages} id="editButton"><span role="img" aria-label="translate">🔁</span>Translate</Button>
                         <Button variant="contained" onClick={openShare} id="editButton"><span role="img" aria-label="share">📢</span> Share</Button>
                         
                 </CardContent>
@@ -263,7 +402,7 @@ function MediaCard(props: IMediaCardProps) {
         mediaBody = (
             <div>
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold", fontFamily:"fantasy"}}>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" id={nameTag} style={{fontWeight:"bold", fontFamily:"fantasy"}}>
                         {props.RecipeName}
                     </Typography>
                 </CardContent>
@@ -273,12 +412,13 @@ function MediaCard(props: IMediaCardProps) {
                     title={props.RecipeName}
                 />
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold"}}>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" id={difficultyTag} style={{fontWeight:"bold"}}>
                         {props.RecipeDifficulty}
                     </Typography>
                     <br/>
                     <Button variant="contained" onClick={deleteRecipe} id="deleteButton"> <span role="img" aria-label="delete">❌</span> Delete</Button>
                     <Button variant="contained" onClick={openModal} id="editButton"><span role="img" aria-label="edit">📝</span> Edit</Button>
+                    <Button variant="contained" onClick={openLanguages} id="editButton"><span role="img" aria-label="translate">🔁</span>Translate</Button>
                     <Button variant="contained" onClick={openShare} id="editButton"><span role="img" aria-label="share">📢</span> Share</Button>
                 </CardContent>
             </div>
@@ -304,11 +444,11 @@ function MediaCard(props: IMediaCardProps) {
                 <Collapse in={expanded} timeout="auto" unmountOnExit >
                     <CardContent>
                         <Typography paragraph style={{fontWeight:"bold", textDecoration:"underline"}}>Ingredients:</Typography>
-                        <Typography paragraph>
+                        <Typography paragraph id={ingredientsTag}>
                             {props.RecipeIngredients}
                         </Typography>
                         <Typography paragraph style={{fontWeight:"bold", textDecoration:"underline"}}>Method:</Typography>
-                        <Typography paragraph>
+                        <Typography paragraph id={descriptionTag}>
                             {props.RecipeDescription}
                         </Typography>
                     </CardContent>
@@ -328,6 +468,14 @@ function MediaCard(props: IMediaCardProps) {
                 style={{textAlign:"center"}}
             >
                 {shareBody}
+            </Modal>
+
+            <Modal
+                open={languagesModal}
+                onClose={closeLanguages}
+                style={{textAlign:"center", overflowY: "auto", marginTop:"10em"}}
+            >
+                {languages}
             </Modal>
 
         </div>

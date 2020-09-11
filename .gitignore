@@ -1,0 +1,7 @@
+//.gitignore
+
+#api keys
+.env.local
+
+#dependencies
+/node_modules
