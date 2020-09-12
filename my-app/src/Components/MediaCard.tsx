@@ -234,7 +234,7 @@ function MediaCard(props: IMediaCardProps) {
             "method": "GET",
             "headers": {
                 "x-rapidapi-host": "just-translated.p.rapidapi.com",
-                "x-rapidapi-key": `${key}`,
+                "x-rapidapi-key": JSON.stringify(key),
                 "Content-Type":"application/json",
                 }
             })

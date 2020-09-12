@@ -1,8 +1,0 @@
-
-
-#api keys
-.env.development
-
-
-#dependencies
-/node_modules
