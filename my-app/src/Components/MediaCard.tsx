@@ -226,6 +226,7 @@ function MediaCard(props: IMediaCardProps) {
             }
         })
     }
+    const key = process.env.REACT_APP_API_KEY;
     function translateCard() {
         let passingArray = `${props.RecipeName} 'HII' ${props.RecipeDifficulty} 'HII' ${props.RecipeIngredients} 'HII' ${props.RecipeDescription}`;
         
@@ -233,7 +234,7 @@ function MediaCard(props: IMediaCardProps) {
             "method": "GET",
             "headers": {
                 "x-rapidapi-host": "just-translated.p.rapidapi.com",
-                "x-rapidapi-key": `${process.env.REACT_APP_API_KEY}`,
+                "x-rapidapi-key": `${key}`,
                 "Content-Type":"application/json",
                 }
             })
