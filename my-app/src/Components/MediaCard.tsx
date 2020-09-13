@@ -287,6 +287,7 @@ function MediaCard(props: IMediaCardProps) {
                     id="cardImage"
                     image={props.RecipeURL}
                     title={props.RecipeName}
+                    aria-label={props.RecipeName}
                 />
             </div>
         );

@@ -64,7 +64,7 @@ function rand() {
 }
   
 function MainPage() {
-    const [recipe, setRecipe] = useState<Recipes[]>([{recipeDescription:"",recipeDifficulty:"",recipeId:0,recipeImageUrl:"",recipeIngredients:"",recipeName:""}])
+    const [recipe, setRecipe] = useState<Recipes[]>([{recipeDescription:"",recipeDifficulty:"",recipeId:0,recipeImageUrl:"",recipeIngredients:"",recipeName:""}]);
 
     useEffect(() => {
         fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes`)
@@ -143,6 +143,7 @@ function MainPage() {
         </div>
     );
 }
+
 function uploadRecipe(){
 
     const recipeInput = document.getElementById("recipe-name-input") as HTMLInputElement;
