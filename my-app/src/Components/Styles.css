@@ -5,3 +5,12 @@
     right: 0;
 }
 
+#cardImage{
+    width: 167em;
+}
+
+@media only screen and (max-width: 700px) {
+    #cardImage{
+        width: 8em;
+    }
+  }

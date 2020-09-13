@@ -26,6 +26,7 @@ interface IMediaCardProps {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+        display: 'flex',
     },
     media: {
       height: 0,
@@ -55,7 +56,18 @@ const useStyles = makeStyles((theme: Theme) =>
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-        textAlign:"center"
+        textAlign:"center",
+      },
+      content: {
+        flex: '1 0 auto',
+      },
+      cover: {
+        width: "15em",
+      },
+      
+    details: {
+        display: 'flex',
+        flexDirection: 'column',
       },
   }),
 );
@@ -160,11 +172,11 @@ function MediaCard(props: IMediaCardProps) {
             }
         })
     }
-    
+
     const [modalStyle] = React.useState(getModalStyle)
     const body = (
         <div style={modalStyle} className={classes.paper}>
-            <form className={classes.root} noValidate autoComplete="off">
+            <form noValidate autoComplete="off">
                 <TextField id="recipe-name-input" label="Recipe Name" defaultValue={props.RecipeName} style={{width:"100%"}}/>
                 <TextField id="recipe-difficulty-input" label="Recipe Difficulty" defaultValue={props.RecipeDifficulty} style={{width:"100%"}}/>
                 <TextField id="recipe-image-url-input" label="Recipe Image URL" defaultValue={props.RecipeURL} style={{width:"100%"}}/>
@@ -197,8 +209,8 @@ function MediaCard(props: IMediaCardProps) {
     const shareBody = (
         <div style={modalStyle} className={classes.paper}>
             <FacebookShareButton url={sharingUrl}>
-                <FacebookIcon size={32} round={true} />
-            </FacebookShareButton>  
+                <FacebookIcon size={32} round={true} />     
+            </FacebookShareButton>
 
             <TwitterShareButton url={sharingUrl}>
                 <TwitterIcon size={32} round={true} />
@@ -233,58 +245,49 @@ function MediaCard(props: IMediaCardProps) {
             </LineShareButton>
             <br/>
             <CopyToClipboard text={sharingUrl}>
+                
                 <button>Copy URL to the clipboard</button>
             </CopyToClipboard>
         </div>
       )
     let mediaBody;
-    let nameTag =`RecipeName${props.RecipeId}`;
-    let difficultyTag = `RecipeDifficulty${props.RecipeId}`;
-    let descriptionTag = `RecipeDescription${props.RecipeId}`;
-    let ingredientsTag = `RecipeIngredients${props.RecipeId}`;
+
     if(!props.RecipeURL){
         mediaBody = (
             <div>
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" id={nameTag} style={{fontWeight:"bold", fontFamily:"fantasy"}}>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold", fontFamily:"fantasy"}}>
                         {props.RecipeName}
                     </Typography>
                 </CardContent>
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" id={difficultyTag} style={{fontWeight:"bold"}}>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold"}}>
                         {props.RecipeDifficulty}
                     </Typography>
-                    <br/>
-                        <Button variant="contained" onClick={deleteRecipe} id="deleteButton"> <span role="img" aria-label="delete">❌</span> Delete</Button>
-                        <Button variant="contained" onClick={openModal} id="editButton"><span role="img" aria-label="edit">📝</span> Edit</Button>
-                        <Button variant="contained" onClick={openShare} id="editButton"><span role="img" aria-label="share">📢</span> Share</Button>
-                        
                 </CardContent>
+                
             </div>
         );
     }
     else {
         mediaBody = (
-            <div>
-                <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" id={nameTag} style={{fontWeight:"bold", fontFamily:"fantasy"}}>
-                        {props.RecipeName}
-                    </Typography>
-                </CardContent>
+            <div className={classes.root}>
+                <div className={classes.details}>
+                    <CardContent className={classes.content}>
+                        <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold", fontFamily:"fantasy"}}>
+                            {props.RecipeName}
+                        </Typography>
+                        <br/>
+                        <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold"}}>
+                            {props.RecipeDifficulty}
+                        </Typography>
+                    </CardContent>              
+                </div>
                 <CardMedia
-                    className={classes.media}
+                    id="cardImage"
                     image={props.RecipeURL}
                     title={props.RecipeName}
                 />
-                <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" id={difficultyTag} style={{fontWeight:"bold"}}>
-                        {props.RecipeDifficulty}
-                    </Typography>
-                    <br/>
-                    <Button variant="contained" onClick={deleteRecipe} id="deleteButton"> <span role="img" aria-label="delete">❌</span> Delete</Button>
-                    <Button variant="contained" onClick={openModal} id="editButton"><span role="img" aria-label="edit">📝</span> Edit</Button>
-                    <Button variant="contained" onClick={openShare} id="editButton"><span role="img" aria-label="share">📢</span> Share</Button>
-                </CardContent>
             </div>
         );
 
@@ -292,9 +295,12 @@ function MediaCard(props: IMediaCardProps) {
 
     return (
         <div>
-            <Card className="MediaCardContainer">
+            <Card className="MediaCardContainer" >
                 {mediaBody}
                 <CardActions disableSpacing>
+                    <Button size="small" color="primary" onClick={deleteRecipe} id="deleteButton"> Delete</Button>
+                    <Button size="small" color="primary" onClick={openModal} id="editButton">Edit</Button>
+                    <Button size="small" color="primary" onClick={openShare} id="editButton">Share</Button>
                     <IconButton
                         className={clsx(classes.expand, {
                             [classes.expandOpen]: expanded,
@@ -305,14 +311,15 @@ function MediaCard(props: IMediaCardProps) {
                         <ExpandMoreIcon />
                     </IconButton>
                 </CardActions>
+               
                 <Collapse in={expanded} timeout="auto" unmountOnExit >
                     <CardContent>
                         <Typography paragraph style={{fontWeight:"bold", textDecoration:"underline"}}>Ingredients:</Typography>
-                        <Typography paragraph id={ingredientsTag}>
+                        <Typography paragraph >
                             {props.RecipeIngredients}
                         </Typography>
                         <Typography paragraph style={{fontWeight:"bold", textDecoration:"underline"}}>Method:</Typography>
-                        <Typography paragraph id={descriptionTag}>
+                        <Typography paragraph >
                             {props.RecipeDescription}
                         </Typography>
                     </CardContent>
