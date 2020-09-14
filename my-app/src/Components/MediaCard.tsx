@@ -286,7 +286,7 @@ function MediaCard(props: IMediaCardProps) {
     let returningBody = (
         `\n Difficulty is: ${props.RecipeDifficulty} \n Ingredients are: ${props.RecipeIngredients} \n Method is: ${props.RecipeDescription} \n ${props.RecipeURL}`
     );
-    let sharingUrl = `https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`;
+    let sharingUrl = `https://recipe-api-nu.azurewebsites.net/recipes/${props.RecipeId}`;
     const shareBody = (
         <div style={modalStyle} className={classes.paper}>
             <IconButton
@@ -377,14 +377,13 @@ function MediaCard(props: IMediaCardProps) {
     }
     return (
         <div>
-            <Card className="MediaCardContainer" >
+            <Card className="MediaCardContainer" style={{marginLeft:"5px", marginRight:"5px"}} >
                 {mediaBody}
                 <CardActions disableSpacing>
-                    <Button size="small" color="primary" onClick={deleteRecipe}> Delete</Button>
-                    <Button size="small" color="primary" onClick={openModal}>Edit</Button>
                     <Button size="small" color="primary" onClick={openShare}>Share</Button>
                     <Button size="small" color="primary" onClick={handleExpandComment}>Comment</Button>
-
+                    <Button size="small" color="primary" onClick={openModal}>Edit</Button>
+                    <Button size="small" color="primary" onClick={deleteRecipe}> Delete</Button>
                     <IconButton
                         className={clsx(classes.expand, {
                             [classes.expandOpen]: expanded,

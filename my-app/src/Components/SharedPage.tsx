@@ -74,30 +74,26 @@ function rand() {
       width:"50%",
     };
 }
-  
-function MainPage() {
-    const [recipe, setRecipe] = useState<Recipes[]>([{recipeDescription:"",recipeDifficulty:"",recipeId:0,recipeImageUrl:"",recipeIngredients:"",recipeName:"",commentingData:[]}]);
+interface Props{
+    match: {
+        params: {
+            id: string|undefined;
+        };
+    };
+}
+function SharedPage( props:Props) {
+    const [recipe, setRecipe] = useState<Recipes>({recipeDescription:"",recipeDifficulty:"",recipeId:0,recipeImageUrl:"",recipeIngredients:"",recipeName:"",commentingData:[]});
 
     useEffect(() => {
-        fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes`)
+        fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.match.params.id}`)
         .then(response => response.json())
         .then(response => {
             setRecipe(response);
         });
          // eslint-disable-next-line
     }, [])
-    
-    var Cards: JSX.Element[] = [];
-    recipe.forEach((el: Recipes, i: Number) => {
-        if(!el || !el.recipeDescription ){
-            return;
-        }
-        Cards.push(
-            <Grid key={"card_"+i} item sm={6} md={4} lg={3} className="MediaGridCard">
-                <MediaCard RecipeId={el.recipeId} RecipeName={el.recipeName} RecipeDifficulty={el.recipeDifficulty} RecipeIngredients={el.recipeIngredients} RecipeDescription={el.recipeDescription} RecipeURL={el.recipeImageUrl} RecipeComments={el.commentingData}/>
-            </Grid>
-            ) 
-    })
+       
+
     const [open, setOpen] = React.useState(false);
 
     const classes = useStyles();
@@ -139,12 +135,16 @@ function MainPage() {
             </form>
         </div>
       );
-
+      if(!recipe || !recipe.recipeDescription ){
+        return;
+    }
     return(
         <div>
             <Header/>
             <Grid container className="MediaGridContainer" style={{marginTop:"1em"}}>
-                {Cards}
+            <Grid key="Shared Card" item sm={6} md={4} lg={3} className="MediaGridCard">
+                <MediaCard RecipeId={recipe.recipeId} RecipeName={recipe.recipeName} RecipeDifficulty={recipe.recipeDifficulty} RecipeIngredients={recipe.recipeIngredients} RecipeDescription={recipe.recipeDescription} RecipeURL={recipe.recipeImageUrl} RecipeComments={recipe.commentingData}/>
+            </Grid>
             </Grid>
             <Button variant="contained" onClick={openModal} id="addButton"> <span role="img" aria-label="add">&#10133;</span>  Add</Button>
             <Modal
@@ -205,4 +205,4 @@ function uploadRecipe(){
             }
     });
 }
-export default MainPage
+export default SharedPage

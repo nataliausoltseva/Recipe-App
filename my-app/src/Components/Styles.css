@@ -5,16 +5,13 @@
     right: 0;
 }
 .cardImage{
-    width: 20em;
+    width: 100%;
 }
 
 #addButton:hover{
     background-color: rgba(216, 255, 173);
 }
 @media only screen and (max-width: 600px) {
-    .cardImage{
-        width: 10em;
-    }
     .MediaCardContainer{
         width: 20em;
     }

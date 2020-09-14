@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 function Header() {
   return (
     <div className="App">
-        <AppBar position='sticky' color='inherit'>
+        <AppBar position='sticky' color='inherit' style={{width:"100%"}}>
             <ToolBar>
               <img src={require("./logo-transparent.png")} style={{width:"5em"}} alt="logo of the page"/>
                 <Typography variant='h5' color='inherit' style={{justifyContent:"center", fontSize:"3vh"}}> 
