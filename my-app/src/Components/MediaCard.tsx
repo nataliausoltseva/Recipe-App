@@ -415,8 +415,8 @@ function MediaCard(props: IMediaCardProps) {
                         style={{marginTop:"1em",width:"100%"}}
                         defaultValue=""
                     />
-                    <Button size="small" color="primary" onClick={addComment} className="saveButton">Save</Button>
-                    <Button size="small" color="primary" onClick={closeCommentInputModel} className="cancelButton">Cancel</Button>
+                    <Button size="small" color="primary" onClick={addComment} className={classes.saveButton}>Save</Button>
+                    <Button size="small" color="primary" onClick={closeCommentInputModel} className={classes.cancelButton}>Cancel</Button>
                 </form>
                 </Collapse>
                 <Collapse in={expanded} timeout="auto" unmountOnExit >
