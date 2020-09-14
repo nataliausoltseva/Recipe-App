@@ -81,7 +81,6 @@ function MainPage() {
         fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes`)
         .then(response => response.json())
         .then(response => {
-            console.log(response);
             setRecipe(response);
         });
          // eslint-disable-next-line

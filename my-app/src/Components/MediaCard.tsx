@@ -133,7 +133,6 @@ function MediaCard(props: IMediaCardProps) {
     const [open, setOpen] = React.useState(false);
 
     const openModal =()=>{
-        console.log(props.RecipeComments);
         setOpen(true);
     }
     const closeModal = () => {
