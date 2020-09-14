@@ -4,13 +4,18 @@
     margin-top: 5em;
     right: 0;
 }
-
-#cardImage{
-    width: 167em;
+.cardImage{
+    width: 20em;
 }
 
-@media only screen and (max-width: 700px) {
-    #cardImage{
-        width: 8em;
+#addButton:hover{
+    background-color: rgba(216, 255, 173);
+}
+@media only screen and (max-width: 600px) {
+    .cardImage{
+        width: 10em;
+    }
+    .MediaCardContainer{
+        width: 20em;
     }
   }

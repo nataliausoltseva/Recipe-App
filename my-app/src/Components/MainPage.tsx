@@ -11,6 +11,7 @@ interface Recipes {
     recipeImageUrl: string;
     recipeIngredients:string;
     recipeName:string;
+    commentingData:[];
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -44,6 +45,16 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: theme.spacing(2, 4, 3),
         textAlign:"center"
       },
+      saveButton:{
+        float:"left",
+        backgroundColor: "rgba(13, 204, 0, 0.6)",
+        marginTop:"1em"
+      },
+      cancelButton:{
+          float:"right",
+          backgroundColor:"rgba(255, 25, 25, 0.33)",
+          marginTop:"1em"
+      }
       
   }),
 );
@@ -64,12 +75,13 @@ function rand() {
 }
   
 function MainPage() {
-    const [recipe, setRecipe] = useState<Recipes[]>([{recipeDescription:"",recipeDifficulty:"",recipeId:0,recipeImageUrl:"",recipeIngredients:"",recipeName:""}]);
+    const [recipe, setRecipe] = useState<Recipes[]>([{recipeDescription:"",recipeDifficulty:"",recipeId:0,recipeImageUrl:"",recipeIngredients:"",recipeName:"",commentingData:[]}]);
 
     useEffect(() => {
         fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes`)
         .then(response => response.json())
         .then(response => {
+            console.log(response);
             setRecipe(response);
         });
          // eslint-disable-next-line
@@ -82,7 +94,7 @@ function MainPage() {
         }
         Cards.push(
             <Grid key={"card_"+i} item sm={6} md={4} lg={3} className="MediaGridCard">
-                <MediaCard RecipeId={el.recipeId} RecipeName={el.recipeName} RecipeDifficulty={el.recipeDifficulty} RecipeIngredients={el.recipeIngredients} RecipeDescription={el.recipeDescription} RecipeURL={el.recipeImageUrl} />
+                <MediaCard RecipeId={el.recipeId} RecipeName={el.recipeName} RecipeDifficulty={el.recipeDifficulty} RecipeIngredients={el.recipeIngredients} RecipeDescription={el.recipeDescription} RecipeURL={el.recipeImageUrl} RecipeComments={el.commentingData}/>
             </Grid>
             ) 
     })
@@ -100,7 +112,7 @@ function MainPage() {
     const [modalStyle] = React.useState(getModalStyle)
     const body = (
         <div style={modalStyle} className={classes.paper} >
-            <form className={classes.root} noValidate autoComplete="off">
+            <form className={classes.root} noValidate autoComplete="off" style={{height:"25em"}}>
                 <TextField id="recipe-name-input" label="Recipe Name" defaultValue="" style={{width:"100%"}}/>
                 <TextField id="recipe-difficulty-input" label="Recipe Difficulty" defaultValue="" style={{width:"100%"}}/>
                 <TextField id="recipe-image-url-input" label="Recipe Image URL" defaultValue="" style={{width:"100%"}}/>
@@ -122,7 +134,8 @@ function MainPage() {
                     style={{marginTop:"1em",width:"100%"}}
                 />
 
-                <Button variant="contained" onClick={uploadRecipe} id="saveButton" style={{textAlign:"center"}}>Save</Button>
+                <Button variant="contained" onClick={uploadRecipe} className={classes.saveButton} style={{textAlign:"center", float:"left",marginTop:"1em"}}>Save</Button>
+                <Button variant="contained" onClick={closeModal} style={{float:"right",marginTop:"1em"}} className={classes.cancelButton}>Cancel</Button>
             </form>
         </div>
       );
