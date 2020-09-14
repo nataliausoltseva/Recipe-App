@@ -20,6 +20,13 @@ steps:
       npm run build
       cd ..
     displayName: 'npm install and build'
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: 'my-app'
+      Contents: 'web.config'
+      TargetFolder: '$(buildDir)'
+
   - task: ArchiveFiles@2
     inputs:
       rootFolderOrFile: '$(buildDir)'
