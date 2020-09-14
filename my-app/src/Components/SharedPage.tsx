@@ -136,7 +136,7 @@ function SharedPage( props:Props) {
         </div>
       );
       if(!recipe || !recipe.recipeDescription ){
-        return;
+        return (null);
     }
     return(
         <div>

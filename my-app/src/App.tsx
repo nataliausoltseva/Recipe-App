@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import MainPage from './Components/MainPage';
 import Router from './router';
 
 function App() {

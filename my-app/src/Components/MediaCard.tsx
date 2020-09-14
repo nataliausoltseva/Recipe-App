@@ -283,10 +283,7 @@ function MediaCard(props: IMediaCardProps) {
             </form>
         </div>
       );
-    let returningBody = (
-        `\n Difficulty is: ${props.RecipeDifficulty} \n Ingredients are: ${props.RecipeIngredients} \n Method is: ${props.RecipeDescription} \n ${props.RecipeURL}`
-    );
-    let sharingUrl = `https://recipe-api-nu.azurewebsites.net/recipes/${props.RecipeId}`;
+    let sharingUrl = `${window.location.origin}/recipes/${props.RecipeId}`;
     const shareBody = (
         <div style={modalStyle} className={classes.paper}>
             <IconButton
@@ -297,14 +294,14 @@ function MediaCard(props: IMediaCardProps) {
                 <CloseIcon/>
             </IconButton>
             <br/>
-            <FacebookShareButton url={sharingUrl} quote={`Name: ${props.RecipeName} ` +returningBody}>
+            <FacebookShareButton url={sharingUrl}>
                 <FacebookIcon size={32} round={true} />     
             </FacebookShareButton>
 
-            <TwitterShareButton url={sharingUrl} via = {`Name: ${props.RecipeName} ` +returningBody}>
+            <TwitterShareButton url={sharingUrl} >
                 <TwitterIcon size={32} round={true} />
             </TwitterShareButton> 
-            <ViberShareButton url={sharingUrl} title={props.RecipeName}>
+            <ViberShareButton url={sharingUrl}>
                 <ViberIcon size={32} round={true} />
             </ViberShareButton> 
 
@@ -396,26 +393,28 @@ function MediaCard(props: IMediaCardProps) {
                     </IconButton>
                 </CardActions>
                 <Collapse in={expandComment} timeout="auto" unmountOnExit >
-                <Typography variant="body2" component="p" style={{ fontSize:"2vh" , paddingTop: 5,listStyleType:"none"}}>
-                    {comentData.map((item,i)=>
-                    <li key={i}>{item.userName} said: {item.commentText}</li>)}
-                </Typography>
-                <Button size="small" color="primary" onClick={openCommentInputModel} className="editButton">Add your comment</Button>
-                <form noValidate autoComplete="off" id="formComment" style={{display:"none"}}>
-                    <TextField id="comment-user-name-input" label="Comment User Name" defaultValue="" style={{width:"100%"}}/>
-                    <br/>
-                    <TextField
-                        id="comment-text-input"
-                        label="Your comment"
-                        multiline
-                        rowsMax={3}
-                        variant="outlined"
-                        style={{marginTop:"1em",width:"100%"}}
-                        defaultValue=""
-                    />
-                    <Button size="small" color="primary" onClick={addComment} className={classes.saveButton}>Save</Button>
-                    <Button size="small" color="primary" onClick={closeCommentInputModel} className={classes.cancelButton}>Cancel</Button>
-                </form>
+                    {comentData && (
+                    <Typography variant="body2" component="p" style={{ fontSize:"2vh" , paddingTop: 5,listStyleType:"none"}}>
+                        {comentData.map((item,i)=>
+                        <li key={i}>{item.userName} said: {item.commentText}</li>)}
+                    </Typography>
+                    )}
+                    <Button size="small" color="primary" onClick={openCommentInputModel} className="editButton">Add your comment</Button>
+                    <form noValidate autoComplete="off" id="formComment" style={{display:"none"}}>
+                        <TextField id="comment-user-name-input" label="Comment User Name" defaultValue="" style={{width:"100%"}}/>
+                        <br/>
+                        <TextField
+                            id="comment-text-input"
+                            label="Your comment"
+                            multiline
+                            rowsMax={3}
+                            variant="outlined"
+                            style={{marginTop:"1em",width:"100%"}}
+                            defaultValue=""
+                        />
+                        <Button size="small" color="primary" onClick={addComment} className={classes.saveButton}>Save</Button>
+                        <Button size="small" color="primary" onClick={closeCommentInputModel} className={classes.cancelButton}>Cancel</Button>
+                    </form>
                 </Collapse>
                 <Collapse in={expanded} timeout="auto" unmountOnExit >
                     <CardContent>
