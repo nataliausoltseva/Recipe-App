@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     media: {
       height: 0,
-      paddingTop: '56.25%', // 16:9
+      paddingTop: '55%', 
     },
     expand: {
       transform: 'rotate(0deg)',
@@ -48,11 +48,9 @@ const useStyles = makeStyles((theme: Theme) =>
       transition: theme.transitions.create('transform', {
         duration: theme.transitions.duration.shortest,
       }),
-      
     },
     expandOpen: {
       transform: 'rotate(180deg)',
-
     },
     avatar: {
       backgroundColor: red[500],
@@ -67,40 +65,33 @@ const useStyles = makeStyles((theme: Theme) =>
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
         textAlign:"center",
-      },
+    },
       content: {
         flex: '1 0 auto',
         height:"5em"
-      },
+    },
       cover: {
         width: "15em",
-      },
-      
+    },
     details: {
         display: 'flex',
         flexDirection: 'column',
-      },
-      saveButton:{
-        float:"left",
+    },
+    saveButton:{
         backgroundColor: "rgba(13, 204, 0, 0.6)",
-        marginTop:"1em"
-      },
-      cancelButton:{
-          float:"right",
+        marginTop:"1em",
+        marginRight:"5px"
+    },
+    cancelButton:{
           backgroundColor:"rgba(255, 25, 25, 0.33)",
-          marginTop:"1em"
-      }
+          marginTop:"1em",
+          marginLeft:"5px"
+    }
   }),
-  
 );
-
-function rand() {
-    return Math.round(Math.random() * 20) - 10;
-  }
-  
-  function getModalStyle() {
-    const top = 50 + rand();
-    const left = 50 + rand();
+function getModalStyle() {
+    const top = 50 + Math.round(Math.random() * 20) - 10;
+    const left = 50 + Math.round(Math.random() * 20) - 10;
   
     return {
       top: `${top}%`,
@@ -112,73 +103,32 @@ function rand() {
 
 function MediaCard(props: IMediaCardProps) {
     const classes = useStyles();
+    const [modalStyle] = React.useState(getModalStyle)
+
     const [expanded, setExpanded] = React.useState(false);
-    const [expandComment, setexpandComment] = React.useState(false);
-
-    const [comentData, setCommentData] = React.useState<Comments[]>([{commentingId:0, commentText:"", recipeId:0, userName:""}]);
-    
-    React.useEffect(()=>{
-        setCommentData(props.RecipeComments);
-
-        // eslint-disable-next-line
-    },[])
-
     const handleExpandClick = () => {
-      setExpanded(!expanded);
-    };
+        setExpanded(!expanded);
+      };
 
+    const [expandComment, setexpandComment] = React.useState(false);
     const handleExpandComment = () => {
         setexpandComment(!expandComment);
       };
-    const [open, setOpen] = React.useState(false);
 
+    const [comentData, setCommentData] = React.useState<Comments[]>([{commentingId:0, commentText:"", recipeId:0, userName:""}]);
+    React.useEffect(()=>{
+        setCommentData(props.RecipeComments);
+        // eslint-disable-next-line
+    },[])
+
+    const [open, setOpen] = React.useState(false);
     const openModal =()=>{
         setOpen(true);
     }
     const closeModal = () => {
         setOpen(false);
     };
-
-    const [deleteModal, setDeleteModal] = React.useState(false);
-
-    const openDeleteModal =()=>{
-        setDeleteModal(true);
-    }
-    const closeDeleteModal =()=>{
-        setDeleteModal(false);
-    }
-
-    const [share, setShare] = React.useState(false);
-
-    const openShare =()=>{
-        setShare(true);
-    }
-    const closeShare =()=>{
-        setShare(false);
-    }
-
-    const [commentPopupModal, setCommentPopupModal] = React.useState(false);
-
-    const openCommentInputModel =()=>{
-        setCommentPopupModal(true);
-    }
-    const closeCommentInputModel =()=>{
-        setCommentPopupModal(false);
-    }
-    function deleteRecipe(){
-        fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
-            method:"DELETE"
-        }).then(response => {
-            if(!response.ok){
-                alert(response.statusText);
-            }
-            else {
-                window.location.reload();
-            }
-        })
-    }
     function uploadRecipe(){
-        
         const recipeInput = document.getElementById("recipe-name-input") as HTMLInputElement;
         const difficultyInput = document.getElementById("recipe-difficulty-input") as HTMLInputElement;
         const ingredientsInput = document.getElementById("recipe-ingredients-input") as HTMLInputElement;
@@ -190,7 +140,6 @@ function MediaCard(props: IMediaCardProps) {
         const ingredients = ingredientsInput.value;
         const description = descriptionInput.value;
         let imageURL = imageURLInput.value;
-
 
         fetch(imageURL,{
             method:"HEAD"
@@ -226,10 +175,41 @@ function MediaCard(props: IMediaCardProps) {
         })
     }
 
-    function showMessage(){
-
+    const [deleteModal, setDeleteModal] = React.useState(false);
+    const openDeleteModal =()=>{
+        setDeleteModal(true);
+    }
+    const closeDeleteModal =()=>{
+        setDeleteModal(false);
+    }
+    function deleteRecipe(){
+        fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
+            method:"DELETE"
+        }).then(response => {
+            if(!response.ok){
+                alert(response.statusText);
+            }
+            else {
+                window.location.reload();
+            }
+        })
     }
 
+    const [share, setShare] = React.useState(false);
+    const openShare =()=>{
+        setShare(true);
+    }
+    const closeShare =()=>{
+        setShare(false);
+    }
+
+    const [commentPopupModal, setCommentPopupModal] = React.useState(false);
+    const openCommentInputModel =()=>{
+        setCommentPopupModal(true);
+    }
+    const closeCommentInputModel =()=>{
+        setCommentPopupModal(false);
+    }
     function addComment(){       
         const userNameInput = document.getElementById("comment-user-name-input") as HTMLInputElement;
         const commentTextInput = document.getElementById("comment-text-input") as HTMLInputElement;
@@ -259,7 +239,7 @@ function MediaCard(props: IMediaCardProps) {
                 }
         });
     }
-    const [modalStyle] = React.useState(getModalStyle)
+   
     const body = (
         <div style={modalStyle} className={classes.paper}>
             <form noValidate autoComplete="off" style={{height:"25em"}}>
@@ -284,9 +264,7 @@ function MediaCard(props: IMediaCardProps) {
                     variant="outlined"
                     style={{marginTop:"1em",width:"100%"}}
                     defaultValue={props.RecipeDescription}
-                />
-
-                
+                />                
                 <Button size="small" color="primary" onClick={uploadRecipe} className={classes.saveButton} >Save</Button>
                 <Button size="small" color="primary" onClick={closeModal} className={classes.cancelButton}>Cancel</Button>
             </form>
@@ -335,7 +313,7 @@ function MediaCard(props: IMediaCardProps) {
             </LineShareButton>
             <br/>
             <CopyToClipboard text={sharingUrl}>
-                <Button id="copyToClipboard" onClick={showMessage}>Copy URL to the clipboard</Button>
+                <Button id="copyToClipboard">Copy URL to the clipboard</Button>
             </CopyToClipboard>
         </div>
       )
@@ -369,13 +347,13 @@ function MediaCard(props: IMediaCardProps) {
             
         </div>
     );
-    let mediaBody;
 
+    let mediaBody;
     if(!props.RecipeURL){
         mediaBody = (
             <div>
                 <CardContent style={{height:"5em"}}>
-                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold", fontFamily:"fantasy"}}>
+                    <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold"}}>
                         {props.RecipeName}
                     </Typography>
 
@@ -392,7 +370,7 @@ function MediaCard(props: IMediaCardProps) {
             <div className={classes.root}>
                 <div className={classes.details}>
                     <CardContent className={classes.content}>
-                        <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold", fontFamily:"fantasy",width:"5em"}}>
+                        <Typography variant="body2" color="textSecondary" component="p" className="MediaCardDescription" style={{fontWeight:"bold",width:"5em"}}>
                             {props.RecipeName}
                         </Typography>
                         <br/>
@@ -409,7 +387,6 @@ function MediaCard(props: IMediaCardProps) {
                 />
             </div>
         );
-
     }
     return (
         <div>

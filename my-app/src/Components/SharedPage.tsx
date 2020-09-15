@@ -47,14 +47,14 @@ const useStyles = makeStyles((theme: Theme) =>
         textAlign:"center"
       },
       saveButton:{
-        float:"left",
         backgroundColor: "rgba(13, 204, 0, 0.6)",
-        marginTop:"1em"
+        marginTop:"1em",
+        marginRight:"5px"
       },
       cancelButton:{
-          float:"right",
           backgroundColor:"rgba(255, 25, 25, 0.33)",
-          marginTop:"1em"
+          marginTop:"1em",
+          marginLeft:"5px"
       }
       
   }),
