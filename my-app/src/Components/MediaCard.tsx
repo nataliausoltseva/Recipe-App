@@ -139,6 +139,15 @@ function MediaCard(props: IMediaCardProps) {
         setOpen(false);
     };
 
+    const [deleteModal, setDeleteModal] = React.useState(false);
+
+    const openDeleteModal =()=>{
+        setDeleteModal(true);
+    }
+    const closeDeleteModal =()=>{
+        setDeleteModal(false);
+    }
+
     const [share, setShare] = React.useState(false);
 
     const openShare =()=>{
@@ -147,14 +156,14 @@ function MediaCard(props: IMediaCardProps) {
     const closeShare =()=>{
         setShare(false);
     }
-    const openCommentInputModel = () => {
-        const form = document.getElementById("formComment") as HTMLInputElement;
-        form.style.display = "block";
-    }
 
-    const closeCommentInputModel = () => {
-        const form = document.getElementById("formComment") as HTMLInputElement;
-        form.style.display = "none";
+    const [commentPopupModal, setCommentPopupModal] = React.useState(false);
+
+    const openCommentInputModel =()=>{
+        setCommentPopupModal(true);
+    }
+    const closeCommentInputModel =()=>{
+        setCommentPopupModal(false);
     }
     function deleteRecipe(){
         fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
@@ -330,6 +339,36 @@ function MediaCard(props: IMediaCardProps) {
             </CopyToClipboard>
         </div>
       )
+    const commentPopup = (
+        <div style={modalStyle} className={classes.paper}>
+            <form noValidate autoComplete="off" id="formComment" style={{height:"10em"}}>
+                <TextField id="comment-user-name-input" label="Comment User Name" defaultValue="" style={{width:"100%"}}/>
+                <br/>
+                <TextField
+                    id="comment-text-input"
+                    label="Your comment"
+                    multiline
+                    rowsMax={3}
+                    variant="outlined"
+                    style={{marginTop:"1em",width:"100%"}}
+                    defaultValue=""
+                />
+                <Button size="small" color="primary" onClick={addComment} className={classes.saveButton}>Save</Button>
+                <Button size="small" color="primary" onClick={closeCommentInputModel} className={classes.cancelButton}>Cancel</Button>
+            </form>
+        </div>
+    );
+
+    const deletePopup = (
+        <div style={modalStyle} className={classes.paper} >
+            <div style={{height:"6em"}}>
+            <p>Are you sure you want to delete this recipe: <strong>{props.RecipeName}</strong></p>
+            <Button size="small" color="primary" onClick={deleteRecipe} className={classes.saveButton}>Save</Button>
+            <Button size="small" color="primary" onClick={closeDeleteModal} className={classes.cancelButton}>Cancel</Button>
+            </div>
+            
+        </div>
+    );
     let mediaBody;
 
     if(!props.RecipeURL){
@@ -374,13 +413,13 @@ function MediaCard(props: IMediaCardProps) {
     }
     return (
         <div>
-            <Card className="MediaCardContainer" style={{marginLeft:"5px", marginRight:"5px"}} >
+            <Card className="MediaCardContainer" style={{margin:"5px"}} >
                 {mediaBody}
                 <CardActions disableSpacing>
                     <Button size="small" color="primary" onClick={openShare}>Share</Button>
                     <Button size="small" color="primary" onClick={handleExpandComment}>Comment</Button>
                     <Button size="small" color="primary" onClick={openModal}>Edit</Button>
-                    <Button size="small" color="primary" onClick={deleteRecipe}> Delete</Button>
+                    <Button size="small" color="primary" onClick={openDeleteModal}> Delete</Button>
                     <IconButton
                         className={clsx(classes.expand, {
                             [classes.expandOpen]: expanded,
@@ -400,21 +439,7 @@ function MediaCard(props: IMediaCardProps) {
                     </Typography>
                     )}
                     <Button size="small" color="primary" onClick={openCommentInputModel} className="editButton">Add your comment</Button>
-                    <form noValidate autoComplete="off" id="formComment" style={{display:"none"}}>
-                        <TextField id="comment-user-name-input" label="Comment User Name" defaultValue="" style={{width:"100%"}}/>
-                        <br/>
-                        <TextField
-                            id="comment-text-input"
-                            label="Your comment"
-                            multiline
-                            rowsMax={3}
-                            variant="outlined"
-                            style={{marginTop:"1em",width:"100%"}}
-                            defaultValue=""
-                        />
-                        <Button size="small" color="primary" onClick={addComment} className={classes.saveButton}>Save</Button>
-                        <Button size="small" color="primary" onClick={closeCommentInputModel} className={classes.cancelButton}>Cancel</Button>
-                    </form>
+
                 </Collapse>
                 <Collapse in={expanded} timeout="auto" unmountOnExit >
                     <CardContent>
@@ -443,6 +468,21 @@ function MediaCard(props: IMediaCardProps) {
                 style={{textAlign:"center"}}
             >
                 {shareBody}
+            </Modal>
+
+            <Modal
+                open={commentPopupModal}
+                onClose={closeCommentInputModel}
+                style={{textAlign:"center"}}
+            >
+                {commentPopup}
+            </Modal>
+            <Modal
+                open={deleteModal}
+                onClose={closeDeleteModal}
+                style={{textAlign:"center"}}
+            >
+                {deletePopup}
             </Modal>
         </div>
     )
