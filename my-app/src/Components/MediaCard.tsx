@@ -86,7 +86,12 @@ const useStyles = makeStyles((theme: Theme) =>
           backgroundColor:"rgba(255, 25, 25, 0.33)",
           marginTop:"1em",
           marginLeft:"5px"
-    }
+    },
+    backButton:{
+        backgroundColor:"rgba(124, 124, 124, 0.33)",
+        marginTop:"1em",
+        marginLeft:"5px"
+  }
   }),
 );
 function getModalStyle() {
@@ -341,8 +346,8 @@ function MediaCard(props: IMediaCardProps) {
         <div style={modalStyle} className={classes.paper} >
             <div style={{height:"6em"}}>
             <p>Are you sure you want to delete this recipe: <strong>{props.RecipeName}</strong></p>
-            <Button size="small" color="primary" onClick={deleteRecipe} className={classes.saveButton}>Delete</Button>
-            <Button size="small" color="primary" onClick={closeDeleteModal} className={classes.cancelButton}>Back</Button>
+            <Button size="small" color="primary" onClick={deleteRecipe} className={classes.cancelButton}>Delete</Button>
+            <Button size="small" color="primary" onClick={closeDeleteModal} className={classes.backButton}>Back</Button>
             </div>
             
         </div>
