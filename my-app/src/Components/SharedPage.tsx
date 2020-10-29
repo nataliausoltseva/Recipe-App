@@ -85,7 +85,7 @@ function SharedPage( props:Props) {
     const [recipe, setRecipe] = useState<Recipes>({recipeDescription:"",recipeDifficulty:"",recipeId:0,recipeImageUrl:"",recipeIngredients:"",recipeName:"",commentingData:[]});
 
     useEffect(() => {
-        fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.match.params.id}`)
+        fetch(`https://localhost:5001/api/Recipes/${props.match.params.id}`)
         .then(response => response.json())
         .then(response => {
             setRecipe(response);
@@ -189,7 +189,7 @@ function uploadRecipe(){
         recipeImageUrl:imageURL
     });
         
-    fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/`,{
+    fetch(`https://localhost:5001/api/Recipes/`,{
         body: JSON.stringify(JSONarray),
         headers: {
             "Content-Type":"application/json",
