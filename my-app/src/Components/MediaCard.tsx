@@ -163,7 +163,7 @@ function MediaCard(props: IMediaCardProps) {
             recipeImageUrl:imageURL
         });
         
-        fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
+        fetch(`https://localhost:5001/api/Recipes/${props.RecipeId}`,{
             body: JSON.stringify(JSONarray),
             headers: {
                 "Content-Type":"application/json",
@@ -188,7 +188,7 @@ function MediaCard(props: IMediaCardProps) {
         setDeleteModal(false);
     }
     function deleteRecipe(){
-        fetch(`https://recipe-api-nu.azurewebsites.net/api/Recipes/${props.RecipeId}`,{
+        fetch(`https://localhost:5001/api/Recipes/${props.RecipeId}`,{
             method:"DELETE"
         }).then(response => {
             if(!response.ok){
@@ -228,7 +228,7 @@ function MediaCard(props: IMediaCardProps) {
             commentText:commentText,
             recipeId: props.RecipeId
         })
-        fetch(`https://recipe-api-nu.azurewebsites.net/api/Commentings`,{
+        fetch(`https://localhost:5001/api/Commentings`,{
             body: JSON.stringify(jsonArray),
             headers:{
                 "Content-Type":"application/json",
